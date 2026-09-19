@@ -2,7 +2,7 @@
 
 ![Cover Photo](images/GSP.png)
 
-| | |
+| --- | --- |
 | Contributor | Mohit Talwar |
 | Organization | The Linux Foundation : [Zephyr Project](https://www.zephyrproject.org/) |
 | Program | Google Summer of Code 2026 |
