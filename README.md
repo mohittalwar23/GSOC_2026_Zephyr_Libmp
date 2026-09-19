@@ -33,9 +33,9 @@ The original scope also included optional extensions. One stretch goal produced 
 
 ## Executive summary
 
-The foundational [mpipe core PR #98514](https://github.com/zephyrproject-rtos/zephyr/pull/98514) merged on September 16, 2026. The base, utility, audio-plugin, and original audio-sample layers are still under review, so the I2S-source and unified-loopback pull requests remain stacked drafts rather than independently mergeable changes. This is an upstream dependency state, not an indication that the work is abandoned: the core only just landed, and the remaining layers can now be reviewed and rebased in dependency order.
+The foundational [mpipe core PR #98514](https://github.com/zephyrproject-rtos/zephyr/pull/98514) merged on September 16, 2026. The base, utility, audio-plugin, and original audio-sample layers are still under review, so the I2S-source and unified-loopback pull requests remain stacked drafts rather than independently mergeable changes. 
 
-Within that stack, this project added the generic I2S capture path and the common sample, fixed lifecycle and audio-processing problems, implemented exact buffer-demand accounting, and developed the driver and board support needed to exercise the work on real devices. The strongest hardware results are the i.MX8MP EVK and XIAO nRF52840 Sense paths. ESP32 has a working but not yet publication-final integration state, while STM32 is deliberately marked as work in progress.
+Within that stack, this project added the generic I2S capture path and the common sample, fixed lifecycle and audio-processing problems, implemented exact buffer-demand accounting, and developed the driver and board support needed to exercise the work on real devices. The strongest hardware results are the i.MX8MP EVK and XIAO nRF52840 Sense paths.
 
 ## Main contributions
 
@@ -76,8 +76,6 @@ Platform validation required substantial work below mpipe. On NXP i.MX8MP, the a
 On the XIAO nRF52840 Sense, the port added I2S and PDM capability reporting, correct PDM stop/drain behavior, recoverable pressure handling, a selectable I2S master-clock frequency, and sample board files for the on-board microphone plus external amplifier. Hardware testing exposed a rate mismatch even though both peripherals were derived from the same oscillator; choosing compatible divider settings removed the steady accumulation and capture drops.
 
 On the NUCLEO-F401RE, the port added I2S capability reporting, a channel length independent of word size for microphones needing 64 bit clocks, recoverable handling of an empty slab or full queue, and a PDM driver that reports capabilities, sizes its own block, answers the full trigger set, and decimates one stream per microphone rather than per requested channel. The player matrix passed on hardware; audibility is not yet established.
-
-The ESP32 integration runs the same DMIC to gain to I2S graph on hardware. Its memory figure was not recorded alongside the others, and its capability reporting and exact final revision still need confirming before the branch is split into PRs.
 
 ### 6. Latency instrumentation and measurement
 
