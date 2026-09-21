@@ -27,7 +27,7 @@ The original scope also included optional extensions. One stretch goal produced 
 | Implement a generic I2S source | **Completed; upstream review in progress** | The new source discovers device capabilities, negotiates a format and buffer pool, supports an optional capture codec, and handles stop/replay. It is proposed in [PR #114261](https://github.com/zephyrproject-rtos/zephyr/pull/114261). |
 | Provide reference loopback pipelines | **Completed for validated configurations** | One `audio_loopback` sample supports DMIC → gain → I2S, I2S → gain → I2S, and native-simulation workflows. It is proposed in [PR #114262](https://github.com/zephyrproject-rtos/zephyr/pull/114262). I also worked slightly on file_src --> i2s_sink although it is not a part of this sample. |
 | Characterize performance and latency | **Completed** | Reusable software-transit and acoustic-loopback instrumentation was implemented and tested on i.MX8MP. The corrected results distinguish software time, pool occupancy, handoff cadence, and physical round-trip latency. |
-| Validate multiple platforms | **Completed** | i.MX8MP, nRF52840, NUCLEO-F401RE and ESP32 are all hardware-tested. `native_sim` and four further NXP targets are build-tested. |
+| Validate multiple platforms | **Completed** | i.MX8MP, nRF52840, NUCLEO-F401RE and ESP32 are all hardware-tested. i.MX8MP and nRF52840 are audible end to end; the NUCLEO-F401RE and ESP32 results cover the pipeline but not audibility. `native_sim` and four further NXP targets are build-tested. |
 | Demonstrate TinyML in the pipeline | **Prototype completed** | A zero-copy cross-core M7-to-HiFi4 audio path reached on-device inference. It is not upstream-ready and will be re-tested before final figures and branch links are published. |
 | USB audio and RTIO/`net_buf` migration | **Deferred** | These remained stretch or longer-term items so that the core audio path, hardening, measurements, and hardware validation could be completed first. |
 
@@ -90,22 +90,22 @@ The stretch prototype splits the application across the i.MX8MP Cortex-M7 and Hi
 
 ## Code contributions and upstream status
 
-Upstream state in this table was rechecked on September 17, 2026. A pull request that contains carried commits is not presented as wholly authored by this project.
+Upstream state in this table was rechecked on September 21, 2026. A pull request that contains carried commits is not presented as wholly authored by this project.
 
 | Contribution | Link or exact revision | Attribution | State |
 | --- | --- | --- | --- |
 | mpipe core | [PR #98514](https://github.com/zephyrproject-rtos/zephyr/pull/98514) | Dependency by Phi Bang Nguyen | **Merged** September 16, 2026 |
-| mpipe base plugin | [PR #111526](https://github.com/zephyrproject-rtos/zephyr/pull/111526) | Dependency by Phi Bang Nguyen | **Open** |
+| mpipe base plugin | [PR #111526](https://github.com/zephyrproject-rtos/zephyr/pull/111526) | Dependency by Phi Bang Nguyen | **Open; conflicting** |
 | mpipe utilities | [PR #114477](https://github.com/zephyrproject-rtos/zephyr/pull/114477) | Dependency by Phi Bang Nguyen | **Merged** |
-| Generic I2S source and audio fixes | [PR #114261](https://github.com/zephyrproject-rtos/zephyr/pull/114261), current head [`52c159b15ab1`](https://github.com/zephyrproject-rtos/zephyr/commit/52c159b15ab18780cd05024f3b0fcdde11401aa2) | Mohit Talwar's commits stacked on the dependencies above | **Open draft; CI passing** |
-| Unified audio-loopback sample and lifecycle work | [PR #114262](https://github.com/zephyrproject-rtos/zephyr/pull/114262), current head [`b01c5667f0aa`](https://github.com/zephyrproject-rtos/zephyr/commit/b01c5667f0aac4eb944a708e18cc32bae65b1d2e) | Mohit Talwar's changes plus Michal Chvatal's preserved original sample commit and the dependency stack | **Open draft; CI passing** |
+| Generic I2S source and audio fixes | [PR #114261](https://github.com/zephyrproject-rtos/zephyr/pull/114261), current head [`4e044e623aa`](https://github.com/zephyrproject-rtos/zephyr/commit/4e044e623aa679a91e975ed9b08f5ff0a64870ad) | Mohit Talwar's commits stacked on the dependencies above | **Open draft; CI passing** |
+| Unified audio-loopback sample and lifecycle work | [PR #114262](https://github.com/zephyrproject-rtos/zephyr/pull/114262), current head [`b58e23bcbcc`](https://github.com/zephyrproject-rtos/zephyr/commit/b58e23bcbccd5d37eed9cff0bd3545274c467349) | Mohit Talwar's changes plus Michal Chvatal's preserved original sample commit and the dependency stack | **Open draft; CI passing** |
 | mpipe player-controlled lifecycle and replay | [PR #114262](https://github.com/zephyrproject-rtos/zephyr/pull/114262) | Mohit Talwar's sample and element lifecycle fixes use Phi Bang Nguyen's mpipe player utility | **Hardware-tested on NXP and nRF; open draft** |
-| NXP i.MX8MP driver and board series | [Issue #117960](https://github.com/zephyrproject-rtos/zephyr/issues/117960); [`gsoc/evk-imx8mp-integration-final`](https://github.com/mohittalwar23/zephyr/tree/gsoc/evk-imx8mp-integration-final) at `a730906a1f6` | Mohit Talwar's integration and proposed driver changes; dependent on existing NXP drivers and HAL | **Hardware-tested integration; split upstreaming pending** |
-| nRF52840 driver and board series | [`gsoc/nrf-integration`](https://github.com/mohittalwar23/zephyr/tree/gsoc/nrf-integration) at `3f58dd3c1e3b` | Mohit Talwar's driver and board changes on carried mpipe/audio dependencies | **Published; hardware-tested before the rebase** |
-| STM32 NUCLEO-F401RE driver and board series | [`gsoc/stm32-integration`](https://github.com/mohittalwar23/zephyr/tree/gsoc/stm32-integration) at `320f96c4958` | Mohit Talwar | **Published; player matrix passed on hardware** |
-| ESP32 integration | [`gsoc/esp32-audio`](https://github.com/mohittalwar23/zephyr/tree/gsoc/esp32-audio) at `b4fcd864b9e` | Mohit Talwar | **Hardware-tested; PR split pending** |
+| NXP i.MX8MP driver and board series | [Issue #117960](https://github.com/zephyrproject-rtos/zephyr/issues/117960); [`gsoc/evk-imx8mp-integration-final`](https://github.com/mohittalwar23/zephyr/tree/gsoc/evk-imx8mp-integration-final) at `a6b4613f424` | Mohit Talwar's integration and proposed driver changes; dependent on existing NXP drivers and HAL | **Hardware-tested integration; split upstreaming pending** |
+| nRF52840 driver and board series | [`gsoc/nrf-integration`](https://github.com/mohittalwar23/zephyr/tree/gsoc/nrf-integration) at `55eb2d998e1` | Mohit Talwar's driver and board changes on carried mpipe/audio dependencies | **Published; hardware-tested after the rebase** |
+| STM32 NUCLEO-F401RE driver and board series | [`gsoc/stm32-integration`](https://github.com/mohittalwar23/zephyr/tree/gsoc/stm32-integration) at `2af06d342ed` | Mohit Talwar | **Published; player matrix passed on hardware** |
+| ESP32 integration | [`gsoc/esp32-integration`](https://github.com/mohittalwar23/zephyr/tree/gsoc/esp32-integration) at `916f18dd176` | Mohit Talwar | **Capture validated on hardware; PR split pending** |
 | Latency instrumentation | `work/mpipe-latency-final`, local only | Mohit Talwar | **Hardware-tested; not yet published** |
-| M7 to HiFi4 IPC and TinyML prototype | [`gsoc/imx8mp-m7-hifi4-ipc`](https://github.com/mohittalwar23/zephyr/tree/gsoc/imx8mp-m7-hifi4-ipc) at `ce2cf83f228` | Mohit Talwar, derived from active IPC and inference work by their original authors | **Published; hardware-validated, upstream review closed** |
+| M7 to HiFi4 IPC and TinyML prototype | [`gsoc/imx8mp-m7-hifi4-ipc`](https://github.com/mohittalwar23/zephyr/tree/gsoc/imx8mp-m7-hifi4-ipc) at `4027756ae13` | Mohit Talwar, derived from active IPC and inference work by their original authors | **Published; hardware-validated, upstream review closed** |
 
 
 
@@ -115,13 +115,13 @@ Upstream state in this table was rechecked on September 17, 2026. A pull request
 | Platform | Validated path | Lifecycle and stress result | Performance or memory result | Known limitation |
 | --- | --- | --- | --- | --- |
 | NXP i.MX8MP EVK, Cortex-M7 | On-board DMIC → gain → SAI/WM8960; WM8960 capture → gain → SAI/WM8960 | Pause/play, stop/play, replay, DMIC and I2S soaks, transmit recovery, and final `PLAYING` state were exercised without runtime warnings in the recorded final sessions. | DMIC software transit 5 µs; I2S transit 2 µs; acoustic round trip summarized below. | The driver/clock/HAL stack still needs to be split and reviewed upstream; the physical codec constrains real formats. |
-| XIAO nRF52840 Sense | On-board PDM microphone → gain → I2S/MAX98357A | 12 lifecycle cycles, 10 forced underrun recoveries, six stall-then-stop cycles, and a 180-second soak passed; no dropped blocks occurred in the post-clock-fix soak. | Whole debug image: 114.5 KiB flash and 43.8 KiB RAM. Approximate audio-pipeline share: 13 KiB flash and 16 KiB RAM. | The generic audio API reports nominal formats, not every hardware divider's exact realized rate; the integration uses matched clock settings. |
-| ESP32 | DMIC → gain → I2S loopback | Hardware-tested | - | Memory figure not recorded. Driver capability reporting and the exact final integration revision still need confirming. |
-| STM32 NUCLEO-F401RE | PDM microphone → gain → I2S/MAX98357A; INMP441 I2S capture on the same graph | 17 player cycles (12 then 5 across a reset), 80 s soak, 0 log errors; `mp34dt01@0`, `i2s2`, `i2s3` and `dma1` all READY. | PDM build 130,564 B flash and 95,441 B RAM (**97.1 %**); I2S build 124,892 B and 34,457 B. | Audibility not established. A single 49,152-byte lookup table in `hal_st`'s `OpenPDMFilter.c` cannot be disabled from Zephyr; the board browns out when the amplifier drives a speaker from 3V3. |
+| XIAO nRF52840 Sense | On-board PDM microphone → gain → I2S/MAX98357A | 12 lifecycle cycles, 10 forced underrun recoveries, six stall-then-stop cycles, and a 180-second soak passed; no dropped blocks occurred in the post-clock-fix soak. | Whole debug image: 113,532 B flash (14.07 %) and 43,768 B RAM (16.70 %). Approximate audio-pipeline share: 13 KiB flash and 16 KiB RAM. | The generic audio API reports nominal formats, not every hardware divider's exact realized rate; the integration uses matched clock settings. |
+| ESP32 | DMIC → gain → I2S loopback | Capture reached PLAYING and held an 18 s soak with 0 errors; caps negotiated at 16 kHz, 2 channels, 16-bit. | 192,736 B flash (4.60 %), 43,520 B IRAM (19.23 %), 28,976 B DRAM0 (14.74 %). | Loopback audibility not established and the player matrix was not obtained: the board browns out with the microphone connected, which is a fault in the test rig rather than in the code. |
+| STM32 NUCLEO-F401RE | PDM microphone → gain → I2S/MAX98357A; INMP441 I2S capture on the same graph | 12 player cycles per variant, 60 s soak, 0 log errors; `mp34dt01@0`, `i2s2`, `i2s3` and `dma1` all READY. | PDM build 122,288 B flash and 95,328 B RAM (**96.97 %**); I2S build 117,072 B and 34,368 B. | Audibility not established. A single 49,152-byte lookup table in `hal_st`'s `OpenPDMFilter.c` cannot be disabled from Zephyr; the board browns out when the amplifier drives a speaker from 3V3. |
 | `native_sim` | Simulated capture → gain → simulated I2S | Capability, lifecycle, teardown, and source/sink tests are exercised in the pull-request and local Twister suites; current PR CI is passing. | Negotiation covers, among other cases, 16-bit/48-kHz and 32-bit/96-kHz combinations. | Simulation validates contracts and fault paths, not board clocks, DMA, codecs, or acoustics. |
 | Additional NXP build targets | RT685, RT595, RT1170, and MCX N5xx sample configurations | Clean builds in the documented matrix. | No hardware runtime figure claimed. | Build success must not be read as physical validation. |
 
-**Status (September 19, 2026):** the STM32 session ran and its results are in the table above. Every figure in this section comes from a recorded run on the stated hardware; build-only and simulated results are labelled as such.
+**Status (September 21, 2026):** every platform above was re-run on hardware after the rebase onto current `main`, and the figures in this section come from those runs. Build-only and simulated results are labelled as such.
 
 ### Corrected latency results
 
@@ -150,26 +150,27 @@ them. Against that, where things stand:
 
 - [PR #114261](https://github.com/zephyrproject-rtos/zephyr/pull/114261): generic I2S source and audio fixes.
 - [PR #114262](https://github.com/zephyrproject-rtos/zephyr/pull/114262): unified loopback sample and lifecycle work.
-- [PR #114263](https://github.com/zephyrproject-rtos/zephyr/pull/114263): `codec_dummy` start/stop output.
-- [PR #111526](https://github.com/zephyrproject-rtos/zephyr/pull/111526): mpipe base plugin, a dependency rather than this project's work.
+- [PR #111526](https://github.com/zephyrproject-rtos/zephyr/pull/111526): mpipe base plugin, a dependency rather than this project's work. Currently conflicting, on `tests/subsys/mpipe/build_all/tests.yaml` only.
+
+[PR #114263](https://github.com/zephyrproject-rtos/zephyr/pull/114263) (`codec_dummy` start/stop output) was closed: the same defect was fixed upstream in [#118945](https://github.com/zephyrproject-rtos/zephyr/pull/118945), merged 16 September as `0c5a0c9e1dd`.
 
 ### Published on the fork, hardware-tested, not yet split into PRs
 
 | Branch | Head | State |
 | --- | --- | --- |
-| [`gsoc/evk-imx8mp-integration-final`](https://github.com/mohittalwar23/zephyr/tree/gsoc/evk-imx8mp-integration-final) | `a730906a1f6` | i.MX8MP EVK, full stack; both capture paths audible |
-| [`gsoc/nrf-integration`](https://github.com/mohittalwar23/zephyr/tree/gsoc/nrf-integration) | `3f58dd3c1e3b` | XIAO nRF52840; matrix passed before the rebase onto current `main` |
-| [`gsoc/stm32-integration`](https://github.com/mohittalwar23/zephyr/tree/gsoc/stm32-integration) | `320f96c4958` | NUCLEO-F401RE; 16 hardware-found driver fixes |
-| [`gsoc/imx8mp-m7-hifi4-ipc`](https://github.com/mohittalwar23/zephyr/tree/gsoc/imx8mp-m7-hifi4-ipc) | `ce2cf83f228` | M7 to HiFi4 cross-core pipeline with TinyML |
-| [`gsoc/esp32-audio`](https://github.com/mohittalwar23/zephyr/tree/gsoc/esp32-audio) | `b4fcd864b9e` | ESP32 DMIC to I2S loopback; hardware-tested |
+| [`gsoc/evk-imx8mp-integration-final`](https://github.com/mohittalwar23/zephyr/tree/gsoc/evk-imx8mp-integration-final) | `a6b4613f424` | i.MX8MP EVK, full stack; both capture paths audible |
+| [`gsoc/nrf-integration`](https://github.com/mohittalwar23/zephyr/tree/gsoc/nrf-integration) | `55eb2d998e1` | XIAO nRF52840; matrix passed again after the rebase onto current `main` |
+| [`gsoc/stm32-integration`](https://github.com/mohittalwar23/zephyr/tree/gsoc/stm32-integration) | `2af06d342ed` | NUCLEO-F401RE; 16 hardware-found driver fixes |
+| [`gsoc/imx8mp-m7-hifi4-ipc`](https://github.com/mohittalwar23/zephyr/tree/gsoc/imx8mp-m7-hifi4-ipc) | `4027756ae13` | M7 to HiFi4 cross-core pipeline with TinyML |
+| [`gsoc/esp32-integration`](https://github.com/mohittalwar23/zephyr/tree/gsoc/esp32-integration) | `916f18dd176` | ESP32 DMIC to I2S loopback; capture validated on hardware |
 
 ### Validated on silicon
 
 - **i.MX8MP EVK**: both capture paths audible; full player matrix, 0 warnings. Coexists with SOF: an A/B run with and without this series is identical, 0 xruns, both audibly clean.
 - **XIAO nRF52840**: 12 lifecycle cycles, 10 forced underrun recoveries, 6 stall-then-stop, 180 s soak, no dropped blocks.
-- **NUCLEO-F401RE**: 17 player cycles across a reset, 80 s soak, 0 log errors.
+- **NUCLEO-F401RE**: 12 player cycles per variant, 60 s soak, 0 log errors.
 - **M7 to HiFi4**: one pipeline spanning two cores; 139 inference windows, 0 buffers dropped; peer restart tears down to `DOWN` without rebuilding.
-- **ESP32**: DMIC to gain to I2S loopback on hardware; memory figure not recorded.
+- **ESP32**: capture reached PLAYING on hardware and held an 18 s soak with 0 errors; loopback audibility not established.
 - **Latency**: software transit and acoustic round trip measured separately; see the corrected table above.
 
 ## Incomplete work and next steps
